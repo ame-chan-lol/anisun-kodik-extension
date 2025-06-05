@@ -71,7 +71,7 @@ function KodikPlayer({
         queryKey: ['anime', 'kodik', idMal],
         queryFn:  async () => {
             if (!idMal) {
-                return;
+                return null;
             }
         
             const client = new Client({
@@ -81,7 +81,9 @@ function KodikPlayer({
                 shikimori_id: idMal,
             });
 
-            console.log(result);
+            if (result.results.length === 0) {
+                return null;
+            }
         
             return result.results[0];
         },
@@ -96,12 +98,22 @@ function KodikPlayer({
         );
     }
 
-    if (error || !data?.link) {
+    if (error) {
         return (
             <Skeleton
                 pulse={false}
                 title="Error."
                 description="Something unexpected happened."
+            />
+        );
+    }
+
+    if (!data?.link) {
+        return (
+            <Skeleton
+                pulse={false}
+                title="Error."
+                description="Unable to find any media files for this anime."
             />
         );
     }
