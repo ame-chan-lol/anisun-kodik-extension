@@ -80,6 +80,8 @@ function KodikPlayer({
             const result = await client.search({
                 shikimori_id: idMal,
             });
+
+            console.log(result);
         
             return result.results[0];
         },
