@@ -17,8 +17,8 @@ module.exports = {
     chunkFormat: false,
   },
   externals: {
-  //  ...externals,
-  //  "remote-component.config.js": "remote-component.config.js",
+    //...externals,
+    //"remote-component.config.js": "remote-component.config.js",
   },
   resolve: {
     extensions: [".js", ".jsx", ".tsx", ".ts"],

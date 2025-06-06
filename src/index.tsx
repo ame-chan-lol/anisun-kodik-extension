@@ -3,36 +3,12 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Client } from "kodikwrapper";
 import "./globals.css";
+import extensionData from "../extension.json";
+import Settings from "./Settings/Settings";
+import Skeleton from "./Skeleton/Skeleton";
+import KodikPlayer from "./KodikPlayer/KodikPlayer";
 
-const KodikPublicApiKey = "9067ca16853b00ad78c7f4fc02a1c33f";
 const queryClient = new QueryClient();
-
-function Skeleton({
-    pulse = true,
-    title,
-    description,
-}: {
-    pulse?: boolean;
-    title: string;
-    description: string;
-}) {
-    return (
-        <div id="extensions-app-shell-id" className="bg-white dark:bg-black absolute top-0 right-0 left-0 bottom-0 z-10">
-            <div className="flex w-full aspect-video bg-white dark:bg-black">
-                <div
-                    className={`flex flex-col gap-4 items-center justify-center h-full w-full bg-neutral-200 dark:bg-neutral-900 ${pulse ? "animate-pulse" : ""}`}
-                >
-                    <p className="leading-none text-xl sm:text-4xl font-semibold">
-                        {title}
-                    </p>
-                    <p className="leading-none opacity-60 text-sm sm:text-lg">
-                        {description}
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 function App() {
     const [idMal, setIdMal] = useState<string>();
@@ -68,73 +44,28 @@ function App() {
     );
 }
 
-function KodikPlayer({
-    idMal,
-}: {
-    idMal: string;
-}) {
-    const { data, isPending, error } = useQuery({
-        queryKey: ['anime', 'kodik', idMal],
-        queryFn:  async () => {
-            if (!idMal) {
-                return null;
-            }
-        
-            const client = new Client({
-                token: KodikPublicApiKey,
-            });
-            const result = await client.search({
-                shikimori_id: Number(idMal),
-            });
-
-            if (result.results.length === 0) {
-                return null;
-            }
-        
-            return result.results[0];
-        },
-    });
-
-    if (isPending) {
+function AppWrapper() {
+    const currentPathname = location.pathname.split("/").slice(2).join("/");
+    
+    if (extensionData.pages.includes(currentPathname)) {
         return (
-            <Skeleton
-                title="Fetching..."
-                description="Fetching data from the Kodik."
-            />
+            <Settings />
         );
     }
 
-    if (error) {
-        return (
-            <Skeleton
-                pulse={false}
-                title="Error."
-                description="Something unexpected happened."
-            />
-        );
-    }
-
-    if (!data?.link) {
-        return (
-            <Skeleton
-                pulse={false}
-                title="Error."
-                description="Unable to find any media files for this anime."
-            />
-        );
-    }
-
-    return (
-        <>
-            <iframe
-                className="aspect-video w-full border-none rounded-none"
-                src={data.link}
-                allow="autoplay *; fullscreen *"
-            />
-        </>
-    );
+    return;
 }
 
-const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
+// if there is no element with `extensions-root-id`, then it's a custom page
+if (document.getElementById("extensions-root-id") !== null) {
+    const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
 
-relativeRoot.render(<App />);
+    relativeRoot.render(<App />);
+}
+
+// if there is no element with `extensions-root-page-id`, then it's an anime player page
+if (document.getElementById("extensions-root-page-id") !== null) {
+    const relativeRoot = createRoot(document.getElementById("extensions-root-page-id"));
+    
+    relativeRoot.render(<AppWrapper />);
+}
