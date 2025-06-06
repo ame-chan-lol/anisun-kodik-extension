@@ -1,0 +1,7 @@
+{
+    "name": "kodik",
+    "url": "https://raw.githubusercontent.com/ame-chan-lol/anisun-kodik-extension/refs/heads/main/dist/bundle.js",
+    "pages": ["kodik"],
+    "version": "1.0",
+    "author": "ame-chan-lol"
+}

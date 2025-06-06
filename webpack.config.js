@@ -1,8 +1,14 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const remoteComponentConfig = require("./remote-component.config").resolve;
+
+const externals = Object.keys(remoteComponentConfig).reduce(
+  (obj, key) => ({ ...obj, [key]: key }),
+  {}
+);
 
 module.exports = {
-  entry: "./src/index.jsx",
+  entry: "./src/index.tsx",
   output: {
     libraryTarget: "commonjs",
     path: path.resolve(__dirname, "dist"),
@@ -10,8 +16,12 @@ module.exports = {
     clean: true,
     chunkFormat: false,
   },
+  externals: {
+  //  ...externals,
+  //  "remote-component.config.js": "remote-component.config.js",
+  },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".jsx", ".tsx", ".ts"],
   },
   module: {
     rules: [
@@ -23,7 +33,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
-      }
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
     ],
   },
   plugins: [
