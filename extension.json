@@ -1,5 +1,7 @@
 {
+    "logo": "",
     "name": "kodik",
+    "displayName": "Kodik Player",
     "url": "https://raw.githubusercontent.com/ame-chan-lol/anisun-kodik-extension/refs/heads/main/dist/bundle.js",
     "pages": ["kodik"],
     "version": "1.1",
