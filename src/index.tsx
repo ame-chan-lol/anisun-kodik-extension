@@ -80,12 +80,16 @@ window.addEventListener("message", (event) => {
         return;
     }
 
-    if (document.getElementById("extensions-root-id") !== null) {
+    if (document.getElementById("extensions-player-id") !== null) {
         const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
     
         relativeRoot.render(<App />);
         setTimeout(() => {
             relativeRoot.unmount();
         }, 5000);
+
+        return;
     }
+
+    console.log("Could not find the player root...")
 })
