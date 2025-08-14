@@ -81,7 +81,7 @@ window.addEventListener("message", (event) => {
     }
 
     if (document.getElementById("extensions-player-id") !== null) {
-        const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
+        const relativeRoot = createRoot(document.getElementById("extensions-player-id"));
     
         relativeRoot.render(<App />);
         setTimeout(() => {
