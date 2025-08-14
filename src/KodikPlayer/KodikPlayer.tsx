@@ -34,7 +34,7 @@ export default function KodikPlayer({
     });
 
     useEffect(() => {
-        console.log("kodik: before event listening");
+        console.log("kodik: before event listening. data:", iframeRef.current, isPending, error, data, data?.link);
         if (!iframeRef.current) {
             return;
         }
@@ -105,7 +105,6 @@ export default function KodikPlayer({
         <>
             <iframe
                 ref={iframeRef}
-                id="kodik-player"
                 className="aspect-video w-full border-none rounded-none"
                 src={data.link}
                 allow="autoplay *; fullscreen *"
