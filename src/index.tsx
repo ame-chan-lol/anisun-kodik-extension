@@ -1,29 +1,58 @@
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Client } from "kodikwrapper";
-import "./globals.css";
-import extensionData from "../extension.json";
-import Settings from "./Settings/Settings";
 import Skeleton from "./Skeleton/Skeleton";
 import KodikPlayer from "./KodikPlayer/KodikPlayer";
+import { id as pluginId } from "../manifest.json";
+import "./globals.css";
+
+declare global {
+  // extend `window` to communicate with plugins
+  interface Window {
+    "__TSUKI__": {
+      // won't change
+      "fixed": {
+        "appName"  : string;
+        "appRootId": string;
+        "baseUrl"  : string;
+      };
+      // window message event will be fired on change
+      "dynamic": {
+        // have user enabled smooth transitions or no
+        "smooth" : boolean;
+        // user color scheme
+        "theme"  : "light" | "dark";
+        // anime title (needed for those plugins that can't use MAL ID)
+        "title"  : string;
+        // anime MAL ID
+        "idMal"  : number;
+        // current anime episode
+        "episode": number;
+      };
+    };
+  }
+}
+    
 
 const queryClient = new QueryClient();
 
 function App() {
-    const [idMal, setIdMal] = useState<string>();
+    const [idMal, setIdMal] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         console.log("%cKodik player extension initialized", "background-color: #111;font-size: 28px;color:white;");
 
-        if (location === undefined) {
-            return;
-        }
+        const handleWindowUpdates = (event: any) => {
+            if (event.data !== "tsuki_updated_window") {
+                return;
+            }
 
-        const pathnames = location.pathname.split("/");
-        const animeId = pathnames[pathnames.length - 1];
+            setIdMal(window.__TSUKI__.dynamic.idMal);
+        };
 
-        setIdMal(animeId);
+        window.addEventListener("message", handleWindowUpdates);
+
+        return () => window.removeEventListener("message", handleWindowUpdates);
     }, []);
 
     if (!idMal) {
@@ -44,28 +73,19 @@ function App() {
     );
 }
 
-function AppWrapper() {
-    const currentPathname = location.pathname.split("/").slice(2).join("/");
-    
-    if (extensionData.pages.includes(currentPathname)) {
-        return (
-            <Settings />
-        );
+window.addEventListener("message", (event) => {
+    const key = event.data;
+
+    if (key !== `tsuki_player_${pluginId}`) {
+        return;
     }
 
-    return;
-}
-
-// if there is no element with `extensions-root-id`, then it's a custom page
-if (document.getElementById("extensions-root-id") !== null) {
-    const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
-
-    relativeRoot.render(<App />);
-}
-
-// if there is no element with `extensions-root-page-id`, then it's an anime player page
-if (document.getElementById("extensions-root-page-id") !== null) {
-    const relativeRoot = createRoot(document.getElementById("extensions-root-page-id"));
+    if (document.getElementById("extensions-root-id") !== null) {
+        const relativeRoot = createRoot(document.getElementById("extensions-root-id"));
     
-    relativeRoot.render(<AppWrapper />);
-}
+        relativeRoot.render(<App />);
+        setTimeout(() => {
+            relativeRoot.unmount();
+        }, 5000);
+    }
+})

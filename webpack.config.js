@@ -1,11 +1,5 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const remoteComponentConfig = require("./remote-component.config").resolve;
-
-const externals = Object.keys(remoteComponentConfig).reduce(
-  (obj, key) => ({ ...obj, [key]: key }),
-  {}
-);
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -15,10 +9,6 @@ module.exports = {
     filename: "bundle.js",
     clean: true,
     chunkFormat: false,
-  },
-  externals: {
-    ...externals,
-    "remote-component.config.js": "remote-component.config.js",
   },
   resolve: {
     extensions: [".js", ".jsx", ".tsx", ".ts"],

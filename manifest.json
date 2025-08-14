@@ -1,0 +1,10 @@
+{
+    "id"        : "kodik",
+    "logo"      : "https://raw.githubusercontent.com/ame-chan-lol/anisun-kodik-extension/refs/heads/main/kodik-logo.png",
+    "name"      : "Kodik Player",
+    "url"       : "",
+    "version"   : "1.0",
+    "authors"   : ["windstone"],
+    "languages" : ["ru"],
+    "categories": ["mal"]
+}

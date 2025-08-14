@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Client } from "kodikwrapper";
 import Skeleton from "../Skeleton/Skeleton";
@@ -8,7 +8,7 @@ const KodikPublicApiKey = "9067ca16853b00ad78c7f4fc02a1c33f";
 export default function KodikPlayer({
     idMal,
 }: {
-    idMal: string;
+    idMal: number;
 }) {
     const { data, isPending, error } = useQuery({
         queryKey: ['anime', 'kodik', idMal],
@@ -21,7 +21,7 @@ export default function KodikPlayer({
                 token: KodikPublicApiKey,
             });
             const result = await client.search({
-                shikimori_id: Number(idMal),
+                shikimori_id: idMal,
             });
 
             if (result.results.length === 0) {
