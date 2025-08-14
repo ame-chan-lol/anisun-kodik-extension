@@ -48,7 +48,7 @@ export default function KodikPlayer({
                 method : "change_episode",
                 episode: window.__TSUKI__.dynamic.episode,
             },
-        });
+        }, "*");
 
         const handleAppUpdate = (event: any) => {
             if (event.data !== "tsuki_updated_window") {
@@ -61,7 +61,7 @@ export default function KodikPlayer({
                     method : "change_episode",
                     episode: window.__TSUKI__.dynamic.episode,
                 },
-            });
+            }, "*");
         };
 
         window.addEventListener("message", handleAppUpdate);
