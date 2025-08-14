@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Client } from "kodikwrapper";
 import Skeleton from "../Skeleton/Skeleton";
@@ -10,6 +10,7 @@ export default function KodikPlayer({
 }: {
     idMal: number;
 }) {
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const { data, isPending, error } = useQuery({
         queryKey: ['anime', 'kodik', idMal],
         queryFn:  async () => {
@@ -33,10 +34,15 @@ export default function KodikPlayer({
     });
 
     useEffect(() => {
-        const kodikElement = document.getElementById("kodik-player") as any;
-        const kodikFrame = kodikElement.contentWindow as any;
+        if (!iframeRef.current) {
+            return;
+        }
 
-        kodikFrame.postMessage({
+        if (isPending || error || !data?.link) {
+            return;
+        }
+
+        iframeRef.current.contentWindow.postMessage({
             key: "kodik_player_api",
             value: {
                 method : "change_episode",
@@ -49,7 +55,7 @@ export default function KodikPlayer({
                 return;
             }
 
-            kodikFrame.postMessage({
+            iframeRef.current.contentWindow.postMessage({
                 key: "kodik_player_api",
                 value: {
                     method : "change_episode",
@@ -95,6 +101,7 @@ export default function KodikPlayer({
     return (
         <>
             <iframe
+                ref={iframeRef}
                 id="kodik-player"
                 className="aspect-video w-full border-none rounded-none"
                 src={data.link}
