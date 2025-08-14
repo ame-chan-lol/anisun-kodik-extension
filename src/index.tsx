@@ -65,7 +65,7 @@ function App() {
     }
 
     return (
-        <div id="extensions-app-shell-id" className="bg-white dark:bg-black absolute top-0 right-0 left-0 bottom-0 z-10">
+        <div id="extensions-app-shell-id" className="rounded-md overflow-hidden bg-white dark:bg-black absolute top-0 right-0 left-0 bottom-0 z-10">
             <QueryClientProvider client={queryClient}>
                 <KodikPlayer idMal={idMal} />
             </QueryClientProvider>

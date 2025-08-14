@@ -32,6 +32,37 @@ export default function KodikPlayer({
         },
     });
 
+    useEffect(() => {
+        const kodikElement = document.getElementById("kodik-player") as any;
+        const kodikFrame = kodikElement.contentWindow as any;
+
+        kodikFrame.postMessage({
+            key: "kodik_player_api",
+            value: {
+                method : "change_episode",
+                episode: window.__TSUKI__.dynamic.episode,
+            },
+        });
+
+        const handleAppUpdate = (event: any) => {
+            if (event.data !== "tsuki_updated_window") {
+                return;
+            }
+
+            kodikFrame.postMessage({
+                key: "kodik_player_api",
+                value: {
+                    method : "change_episode",
+                    episode: window.__TSUKI__.dynamic.episode,
+                },
+            });
+        };
+
+        window.addEventListener("message", handleAppUpdate);
+
+        return () => window.removeEventListener("message", handleAppUpdate);
+    }, []);
+
     if (isPending) {
         return (
             <Skeleton
@@ -64,6 +95,7 @@ export default function KodikPlayer({
     return (
         <>
             <iframe
+                id="kodik-player"
                 className="aspect-video w-full border-none rounded-none"
                 src={data.link}
                 allow="autoplay *; fullscreen *"
