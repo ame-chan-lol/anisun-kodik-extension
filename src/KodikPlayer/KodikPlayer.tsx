@@ -34,6 +34,7 @@ export default function KodikPlayer({
     });
 
     useEffect(() => {
+        console.log("kodik: before event listening");
         if (!iframeRef.current) {
             return;
         }
@@ -42,6 +43,7 @@ export default function KodikPlayer({
             return;
         }
 
+        console.log("kodik: listening for episode changes");
         iframeRef.current.contentWindow.postMessage({
             key: "kodik_player_api",
             value: {
@@ -62,6 +64,7 @@ export default function KodikPlayer({
                     episode: window.__TSUKI__.dynamic.episode,
                 },
             }, "*");
+            console.log("kodik: changed episode to", window.__TSUKI__.dynamic.episode);
         };
 
         window.addEventListener("message", handleAppUpdate);
