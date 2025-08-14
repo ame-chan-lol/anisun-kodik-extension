@@ -37,7 +37,7 @@ declare global {
 const queryClient = new QueryClient();
 
 function App() {
-    const [idMal, setIdMal] = useState<number | undefined>(undefined);
+    const [idMal, setIdMal] = useState<number>(window.__TSUKI__.dynamic.idMal);
 
     useEffect(() => {
         console.log("%cKodik player extension initialized", "background-color: #111;font-size: 28px;color:white;");
@@ -84,9 +84,6 @@ window.addEventListener("message", (event) => {
         const relativeRoot = createRoot(document.getElementById("extensions-player-id"));
     
         relativeRoot.render(<App />);
-        setTimeout(() => {
-            relativeRoot.unmount();
-        }, 5000);
 
         return;
     }
